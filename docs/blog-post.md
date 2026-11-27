@@ -16,13 +16,21 @@
 
 ![桌面端界面](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/screenshot.png)
 
-模块可以拖动排序、可以用眼睛图标控制显隐；基本信息里的性别、年龄、城市、电话这些都是字段，可以自己增删，也能加 GitHub、知乎、个人网站这类带图标的链接字段：
+模块可以拖动排序，顺序会实时反映到右边的简历上：
+
+![拖动排序](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/gifs/drag-sort.gif)
+
+配色也是全局的——换一个主题色，姓名、板块标题、标签、技能条会一起变：
+
+![切换配色](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/gifs/theme.gif)
+
+除了排序，每个模块都能用眼睛图标控制显隐；基本信息里的性别、年龄、城市、电话也都是字段，可以自己增删，还能加 GitHub、知乎、个人网站这类带图标的链接字段：
 
 ![字段类型](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/field-types.png)
 
-窄屏（≤900px）会自动换成另一套布局：顶部横向模块条 + 编辑区，预览收起来，点右上角「预览」全屏查看。
+窄屏（≤900px）会自动换成另一套布局：顶部横向模块条 + 编辑区，预览收起来，点右上角「预览」全屏查看：
 
-![移动端](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/mobile.png)
+![移动端预览](https://raw.githubusercontent.com/cy-wwyy/resume-forge/main/docs/gifs/mobile-preview.gif)
 
 ## 定下的几条规则
 
