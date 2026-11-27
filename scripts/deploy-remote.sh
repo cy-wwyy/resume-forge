@@ -13,12 +13,18 @@ SSH_KEY="${SSH_KEY:-}"
 echo "› 构建（base=${BASE_PATH}）"
 npx vite build --base="$BASE_PATH"
 
-RSYNC_SSH="ssh"
+SSH_OPTS=""
 if [ -n "$SSH_KEY" ]; then
-  RSYNC_SSH="ssh -i $SSH_KEY"
+  SSH_OPTS="-i $SSH_KEY"
 fi
 
 echo "› 同步到 ${REMOTE}:${REMOTE_DIR}"
-rsync -az --delete -e "$RSYNC_SSH" dist/ "${REMOTE}:${REMOTE_DIR}/"
+if command -v rsync >/dev/null 2>&1; then
+  rsync -az --delete -e "ssh $SSH_OPTS" dist/ "${REMOTE}:${REMOTE_DIR}/"
+else
+  # 没有 rsync 的机器走 tar over ssh，效果一样（不删旧文件）
+  echo "  本机没有 rsync，改用 tar 传输"
+  tar czf - -C dist . | ssh $SSH_OPTS "$REMOTE" "mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
+fi
 
 echo "✓ 完成"
