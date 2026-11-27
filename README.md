@@ -1,5 +1,7 @@
 # 简历生成器 · ResumeForge
 
+[![CI](https://github.com/cy-wwyy/resume-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/cy-wwyy/resume-forge/actions/workflows/ci.yml)
+
 自用的网页简历编辑器：左侧选模块 → 中间填写 → 右侧 A4 实时预览 → 一键下载 PDF / PNG / JSON。
 数据只存本机浏览器，不登录、不上传、不收费。
 
