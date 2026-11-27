@@ -133,6 +133,12 @@ select {
   color: var(--c-sub);
 }
 
+.tb-icon {
+  width: 34px;
+  padding: 0;
+  justify-content: center;
+}
+
 .tb-btn.primary {
   background: var(--c-accent);
   color: #fff;
@@ -1354,7 +1360,7 @@ input[type='month'].input {
   /* 移动端隐藏保存状态、重置、保存（都自动落盘），只留预览和导出 */
   .tb-actions .save-state,
   .tb-actions .tb-btn.subtle,
-  .tb-actions .tb-btn:not(.primary):not(.mobile-only) {
+  .tb-actions .tb-btn:not(.primary):not(.mobile-only):not(.tb-icon) {
     display: none;
   }
 

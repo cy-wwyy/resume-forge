@@ -22,6 +22,7 @@ import { Popover } from '@/components/Popover';
 import { templates } from '@/templates/registry';
 import { exportJson, exportPdf, exportPng, importJsonFile, checkServer } from '@/export';
 import { exportNode } from '@/export/node';
+import { BRAND_PATHS } from '@/components/brandIcons';
 
 const SWATCHES = ['#2563eb', '#0f766e', '#7c3aed', '#b45309', '#be123c', '#334155', '#0d9488', '#1f2937'];
 
@@ -250,6 +251,18 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
       <div className="topbar-spacer" />
 
       <div className="tb-actions">
+      <a
+        className="tb-btn tb-icon"
+        href="https://github.com/cy-wwyy/resume-forge"
+        target="_blank"
+        rel="noreferrer"
+        title="GitHub 仓库"
+        aria-label="GitHub 仓库"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+          <path d={BRAND_PATHS.github} />
+        </svg>
+      </a>
       <button type="button" className="tb-btn mobile-only" onClick={onPreview}>
         <Eye size={15} /> 预览
       </button>
