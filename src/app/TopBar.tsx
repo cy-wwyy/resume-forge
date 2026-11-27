@@ -3,6 +3,7 @@ import {
   Braces,
   Check,
   Download,
+  Eye,
   FileText,
   Image as ImageIcon,
   Loader2,
@@ -33,7 +34,7 @@ function timeAgo(ts: number | null): string {
   return `${Math.floor(diff / 3600_000)} 小时前保存`;
 }
 
-export function TopBar() {
+export function TopBar({ onPreview }: { onPreview: () => void }) {
   const resume = useResumeStore((s) => s.resume);
   const patchTheme = useResumeStore((s) => s.patchTheme);
   const setTemplate = useResumeStore((s) => s.setTemplate);
@@ -94,7 +95,8 @@ export function TopBar() {
         简历生成器
       </div>
 
-      <Popover label={<><SlidersHorizontal size={15} /> 模板</>} align="left">
+      <div className="tb-settings">
+      <Popover label={<><SlidersHorizontal size={15} /> <span className="tb-label">模板</span></>} align="left">
         {() => (
           <div>
             <div className="pop-title">选择模板</div>
@@ -141,7 +143,7 @@ export function TopBar() {
         )}
       </Popover>
 
-      <Popover label={<><Palette size={15} /> 配色</>} align="left">
+      <Popover label={<><Palette size={15} /> <span className="tb-label">配色</span></>} align="left">
         <div>
           <div className="pop-title">主题色</div>
           <div className="swatches">
@@ -169,7 +171,7 @@ export function TopBar() {
         </div>
       </Popover>
 
-      <Popover label={<><Type size={15} /> 文字</>} align="left">
+      <Popover label={<><Type size={15} /> <span className="tb-label">文字</span></>} align="left">
         <div>
           <div className="pop-title">字体</div>
           <div className="seg">
@@ -207,7 +209,7 @@ export function TopBar() {
         </div>
       </Popover>
 
-      <Popover label={<><SlidersHorizontal size={15} /> 间距</>} align="left">
+      <Popover label={<><SlidersHorizontal size={15} /> <span className="tb-label">间距</span></>} align="left">
         <div>
           <div className="pop-title">模块间距</div>
           <div className="slider-row">
@@ -243,9 +245,14 @@ export function TopBar() {
           </label>
         </div>
       </Popover>
+      </div>
 
       <div className="topbar-spacer" />
 
+      <div className="tb-actions">
+      <button type="button" className="tb-btn mobile-only" onClick={onPreview}>
+        <Eye size={15} /> 预览
+      </button>
       <span className="save-state">{saving ? '保存中…' : timeAgo(savedAt)}</span>
       <button
         type="button"
@@ -319,6 +326,7 @@ export function TopBar() {
           </div>
         )}
       </Popover>
+      </div>
 
       <input
         ref={importRef}

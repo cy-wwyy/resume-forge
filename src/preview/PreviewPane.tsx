@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { Maximize2, Minus, Plus } from 'lucide-react';
+import { Maximize2, Minus, Plus, X } from 'lucide-react';
 import { useResumeStore } from '@/store/resumeStore';
 import { getTemplate } from '@/templates/registry';
 
 const PAGE_W = 794;
 const PAGE_H = 1123;
 
-export function PreviewPane() {
+export function PreviewPane({
+  mobileOpen = false,
+  onClose,
+}: {
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}) {
   const resume = useResumeStore((s) => s.resume);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -36,13 +42,32 @@ export function PreviewPane() {
   // 这样不会出现「左侧空一大块 + 右侧溢出出横向滚动条」。
   const rawScale = Math.min(1.1, Math.max(0.35, (containerW - 50) / PAGE_W));
   // 向下取整到 0.1%，避免分数宽度在 Windows 经典滚动条下撑出 1px 溢出
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [mobileOpen, onClose]);
+
   const fitScale = Math.floor(rawScale * 1000) / 1000;
   const scale = zoom ?? fitScale;
   const pages = Math.max(1, Math.ceil(docH / PAGE_H));
   const Template = getTemplate(resume.meta.templateId).Document;
 
   return (
-    <section className="preview">
+    <section className={`preview ${mobileOpen ? 'is-open' : ''}`}>
+      {mobileOpen && (
+        <button type="button" className="preview-close" onClick={onClose} aria-label="关闭预览">
+          <X size={18} />
+        </button>
+      )}
       <div className={`preview-scroll ${zoom !== null ? 'is-zoomed' : ''}`} ref={scrollRef}>
         <div style={{ width: PAGE_W * scale, height: Math.max(docH, PAGE_H) * scale }}>
           <div

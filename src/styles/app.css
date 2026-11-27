@@ -103,6 +103,14 @@ select {
   flex: 1;
 }
 
+/* 顶栏分成「设置区」和「操作区」两组，移动端才好换行 */
+.tb-settings,
+.tb-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .tb-btn {
   display: inline-flex;
   align-items: center;
@@ -1287,4 +1295,223 @@ input[type='month'].input {
   background: #fff;
   pointer-events: none;
   z-index: -1;
+}
+
+/* ---------------- 移动端 ---------------- */
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* 顶栏拆两行：品牌 + 预览/导出，第二行放模板/配色/文字/间距 */
+  .topbar {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 8px 10px 6px;
+    row-gap: 6px;
+  }
+
+  .brand {
+    margin-right: auto;
+    font-size: 14px;
+  }
+
+  .brand-mark {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .tb-settings {
+    order: 3;
+    width: 100%;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tb-settings .tb-btn {
+    padding: 0 9px;
+  }
+
+  .tb-label {
+    display: none;
+  }
+
+  .topbar-spacer {
+    display: none;
+  }
+
+  .tb-actions {
+    order: 2;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  /* 移动端隐藏保存状态、重置、保存（都自动落盘），只留预览和导出 */
+  .tb-actions .save-state,
+  .tb-actions .tb-btn.subtle,
+  .tb-actions .tb-btn:not(.primary):not(.mobile-only) {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-flex;
+  }
+
+  /* 侧栏变成顶部横向模块条 */
+  .body {
+    flex-direction: column;
+  }
+
+  .rail {
+    width: 100%;
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    border-right: none;
+    border-bottom: 1px solid var(--c-line);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rail-item {
+    flex: 0 0 auto;
+    width: auto;
+    height: 36px;
+    padding: 0 10px;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .rail-item .rail-label {
+    flex: 0 0 auto;
+  }
+
+  .rail-item .switch,
+  .rail-foot,
+  .rail-note,
+  .rail-sep,
+  .rail-hint {
+    display: none;
+  }
+
+  .rail-add {
+    flex: 0 0 auto;
+    width: auto;
+    height: 36px;
+    padding: 0 12px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* 桌面端收起的侧栏在移动端恢复成横向条 */
+  .rail.collapsed {
+    width: 100%;
+    flex: 0 0 auto;
+    padding: 6px 8px;
+  }
+
+  .rail.collapsed .rail-label {
+    display: block;
+  }
+
+  .rail.collapsed .rail-item {
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .rail-menu {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    z-index: 110;
+    max-height: 60vh;
+    overflow-y: auto;
+    box-shadow: 0 -8px 30px rgba(17, 24, 39, 0.18);
+  }
+
+  .form-pane {
+    width: 100%;
+    flex: 1 1 auto;
+    border-right: none;
+    padding: 14px 12px 90px;
+  }
+
+  /* 预览默认隐藏，点「预览」弹出全屏 */
+  .preview {
+    display: none;
+  }
+
+  .preview.is-open {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    background: var(--c-preview-bg);
+  }
+
+  .preview-scroll {
+    padding: 12px 12px 72px;
+  }
+
+  .preview-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--c-line);
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--c-text);
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.12);
+  }
+
+  .zoom-bar {
+    bottom: 10px;
+  }
+
+  /* iOS 上输入框字号小于 16px 会触发自动放大 */
+  .input,
+  .textarea,
+  .select {
+    font-size: 16px;
+  }
+
+  .rt-editor {
+    font-size: 15px;
+  }
+
+  /* 顶栏的弹出层改成贴边全宽，避免超出屏幕 */
+  .pop {
+    position: static;
+  }
+
+  .pop-panel,
+  .pop-panel.left {
+    left: 8px;
+    right: 8px;
+    top: 100%;
+    margin-top: 6px;
+    min-width: 0;
+  }
+
+  .toasts {
+    left: 8px;
+    right: 8px;
+    top: 8px;
+    transform: none;
+  }
 }

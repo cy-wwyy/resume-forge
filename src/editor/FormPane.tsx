@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useResumeStore } from '@/store/resumeStore';
 import { BasicsForm, IntentForm, SectionForm } from '@/editor/forms';
 
@@ -10,6 +10,7 @@ export function FormPane() {
   const sectionIndex = section ? resume.sections.findIndex((s) => s.id === section.id) : -1;
   const moveSection = useResumeStore((s) => s.moveSection);
   const removeSection = useResumeStore((s) => s.removeSection);
+  const toggleSection = useResumeStore((s) => s.toggleSection);
   const isBasics = activeId === 'basics';
   const isIntent = activeId === 'intent';
 
@@ -24,6 +25,14 @@ export function FormPane() {
         <span className="spacer" />
         {section && (
           <span className="form-head-actions">
+            <button
+              type="button"
+              className="icon-btn"
+              title={section.visible ? '在简历上隐藏该模块' : '在简历上显示该模块'}
+              onClick={() => toggleSection(section.id)}
+            >
+              {section.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+            </button>
             <button
               type="button"
               className="icon-btn"
