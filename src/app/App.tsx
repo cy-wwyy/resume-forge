@@ -8,6 +8,7 @@ import { ExportRoot, PrintRoot, PageStyle } from '@/preview/Roots';
 import { bootstrap, saveNow, useSaveStore } from '@/store/persistence';
 import { useResumeStore } from '@/store/resumeStore';
 import { fileBase } from '@/export/download';
+import { isStandalone } from '@/standalone/flag';
 
 export function App() {
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -40,6 +41,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    if (isStandalone()) return;
     const resume = useResumeStore.getState().resume;
     document.title = fileBase({ ...resume, basics: { ...resume.basics, name } });
   }, [name, position]);

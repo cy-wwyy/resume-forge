@@ -6,3 +6,5 @@ dist
 .env
 # 导出的简历数据不要进仓库
 *.resume.json
+public/standalone.html
+dist-standalone

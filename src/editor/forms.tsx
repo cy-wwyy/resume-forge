@@ -24,6 +24,7 @@ import { countChars } from '@shared/util/html';
 import { formatSalary } from '@shared/util/salary';
 import { BASIC_FIELD_MAP, BASIC_FIELD_TYPES } from '@shared/schema/fieldTypes';
 import { uid } from '@shared/schema/sample';
+import { isStandalone } from '@/standalone/flag';
 import { useResumeStore } from '@/store/resumeStore';
 import { Field, MonthRange, TagInput, TextArea, TextInput } from '@/components/fields';
 import { FieldIcon } from '@/components/FieldIcon';
@@ -89,6 +90,7 @@ export function BasicsForm({ resume }: { resume: Resume }) {
   const patch = useResumeStore((s) => s.patchBasics);
   const b = resume.basics;
   const fileRef = useRef<HTMLInputElement>(null);
+  const standalone = isStandalone();
   const [picker, setPicker] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -175,7 +177,10 @@ export function BasicsForm({ resume }: { resume: Resume }) {
           </div>
         </Field>
 
-        <Field label="基本信息字段" hint="拖动排序，眼睛控制显隐">
+        <Field
+          label="基本信息字段"
+          hint={standalone ? '按需填写' : '拖动排序，眼睛控制显隐'}
+        >
           <div className="field-list">
             {b.fields.map((f) => (
               <div
@@ -201,22 +206,24 @@ export function BasicsForm({ resume }: { resume: Resume }) {
                   setOverId(null);
                 }}
               >
-                <span
-                  className="drag-handle"
-                  draggable
-                  title="拖动排序"
-                  onDragStart={(e) => {
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', f.id);
-                    setDragId(f.id);
-                  }}
-                  onDragEnd={() => {
-                    setDragId(null);
-                    setOverId(null);
-                  }}
-                >
-                  <GripVertical size={14} />
-                </span>
+                {!standalone && (
+                  <span
+                    className="drag-handle"
+                    draggable
+                    title="拖动排序"
+                    onDragStart={(e) => {
+                      e.dataTransfer.effectAllowed = 'move';
+                      e.dataTransfer.setData('text/plain', f.id);
+                      setDragId(f.id);
+                    }}
+                    onDragEnd={() => {
+                      setDragId(null);
+                      setOverId(null);
+                    }}
+                  >
+                    <GripVertical size={14} />
+                  </span>
+                )}
                 <span className="extra-icon" title={BASIC_FIELD_MAP[f.type].label}>
                   <FieldIcon type={f.type} size={14} />
                 </span>
@@ -244,31 +251,37 @@ export function BasicsForm({ resume }: { resume: Resume }) {
                     onChange={(e) => updateField(f.id, { value: e.target.value })}
                   />
                 )}
-                <button
-                  type="button"
-                  className={`icon-btn ${f.visible ? '' : 'off'}`}
-                  title={f.visible ? '在简历上隐藏' : '在简历上显示'}
-                  onClick={() => updateField(f.id, { visible: !f.visible })}
-                >
-                  {f.visible ? <Eye size={15} /> : <EyeOff size={15} />}
-                </button>
-                <button
-                  type="button"
-                  className="icon-btn danger"
-                  title="删除字段"
-                  onClick={() => removeField(f.id)}
-                >
-                  <Trash2 size={14} />
-                </button>
+                {!standalone && (
+                  <>
+                    <button
+                      type="button"
+                      className={`icon-btn ${f.visible ? '' : 'off'}`}
+                      title={f.visible ? '在简历上隐藏' : '在简历上显示'}
+                      onClick={() => updateField(f.id, { visible: !f.visible })}
+                    >
+                      {f.visible ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-btn danger"
+                      title="删除字段"
+                      onClick={() => removeField(f.id)}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </>
+                )}
               </div>
             ))}
           </div>
 
-          <button type="button" className="chip ghost" onClick={() => setPicker((v) => !v)}>
-            <Plus size={12} /> 添加字段
-          </button>
+          {!standalone && (
+            <button type="button" className="chip ghost" onClick={() => setPicker((v) => !v)}>
+              <Plus size={12} /> 添加字段
+            </button>
+          )}
 
-          {picker && (
+          {!standalone && picker && (
             <div className="field-type-menu">
               {BASIC_FIELD_TYPES.map((t) => (
                 <button

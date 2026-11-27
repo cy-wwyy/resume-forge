@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>简历填写（离线版）</title>
+    <script>
+      // 这个文件由主应用导出时注入模板，标记离线模式
+      window.__STANDALONE__ = true;
+    </script>
+    <script id="resume-template" type="application/json">__RESUME_TEMPLATE__</script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/standalone/main.tsx"></script>
+  </body>
+</html>

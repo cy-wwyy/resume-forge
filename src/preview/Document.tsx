@@ -137,6 +137,32 @@ function fieldText(f: BasicsField): string {
 }
 
 /** 教育这类有确定结束时间的：没填就不显示 */
+/** 判断板块是否有内容：空板块不渲染标题，打印出来更干净 */
+function plainText(html: string): string {
+  return sanitizeHtml(html).replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+}
+
+function sectionHasContent(section: Section): boolean {
+  switch (section.kind) {
+    case 'summary':
+      return plainText(section.html).length > 0;
+    case 'skill':
+      return section.items.some(
+        (it) => it.summary.trim() || it.keywords.trim() || it.groups.some((g) => g.name.trim()),
+      );
+    case 'education':
+      return section.items.some((it) => it.school.trim() || it.major.trim() || it.courses.trim());
+    case 'work':
+      return section.items.some((it) => it.company.trim() || it.role.trim() || plainText(it.desc));
+    case 'project':
+      return section.items.some((it) => it.name.trim() || it.role.trim() || plainText(it.desc));
+    case 'award':
+      return section.items.some((it) => it.title.trim());
+    case 'custom':
+      return section.items.some((it) => it.title.trim() || it.subtitle.trim() || plainText(it.desc));
+  }
+}
+
 const rangeFixed = (start: string, end: string) => [start, end].filter(Boolean).join(' ~ ');
 /** 工作/项目这类可能持续的：结束时间留空即「至今」 */
 const rangeOpen = (start: string, end: string) => {
@@ -299,7 +325,7 @@ export function ResumeDocument({ resume }: { resume: Resume }) {
     >
       <Header resume={resume} />
       {resume.sections
-        .filter((s) => s.visible)
+        .filter((s) => s.visible && sectionHasContent(s))
         .map((s) => (
           <section className="rs-section" key={s.id}>
             <SectionView section={s} dateStyle={resume.theme.dateStyle} />

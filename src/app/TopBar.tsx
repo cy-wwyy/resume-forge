@@ -4,6 +4,7 @@ import {
   Check,
   Download,
   Eye,
+  FileDown,
   FileText,
   Image as ImageIcon,
   Loader2,
@@ -23,6 +24,8 @@ import { templates } from '@/templates/registry';
 import { exportJson, exportPdf, exportPng, importJsonFile, checkServer } from '@/export';
 import { exportNode } from '@/export/node';
 import { BRAND_PATHS } from '@/components/brandIcons';
+import { isStandalone } from '@/standalone/flag';
+import { exportStandaloneHtml } from '@/export/standalone-html';
 
 const SWATCHES = ['#2563eb', '#0f766e', '#7c3aed', '#b45309', '#be123c', '#334155', '#0d9488', '#1f2937'];
 
@@ -36,6 +39,7 @@ function timeAgo(ts: number | null): string {
 }
 
 export function TopBar({ onPreview }: { onPreview: () => void }) {
+  const standalone = isStandalone();
   const resume = useResumeStore((s) => s.resume);
   const patchTheme = useResumeStore((s) => s.patchTheme);
   const setTemplate = useResumeStore((s) => s.setTemplate);
@@ -43,7 +47,7 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
   const savedAt = useSaveStore((s) => s.savedAt);
   const saving = useSaveStore((s) => s.saving);
   const [, tick] = useState(0);
-  const [busy, setBusy] = useState<null | 'pdf' | 'png' | 'json'>(null);
+  const [busy, setBusy] = useState<null | 'pdf' | 'png' | 'json' | 'html'>(null);
   const [serverUp, setServerUp] = useState<boolean | null>(null);
   const importRef = useRef<HTMLInputElement>(null);
   const theme = resume.theme;
@@ -54,8 +58,9 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
   }, []);
 
   useEffect(() => {
+    if (standalone) return;
     void checkServer(true).then((s) => setServerUp(s === 'up'));
-  }, []);
+  }, [standalone]);
 
   const requireNode = () => {
     const node = exportNode.current;
@@ -63,13 +68,16 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
     return node;
   };
 
-  const doExport = async (kind: 'pdf' | 'png' | 'json') => {
+  const doExport = async (kind: 'pdf' | 'png' | 'json' | 'html') => {
     if (busy) return;
     setBusy(kind);
     try {
       if (kind === 'json') {
         const r = exportJson(resume);
         toast(`已下载 ${r.filename}`, 'ok');
+      } else if (kind === 'html') {
+        const filename = await exportStandaloneHtml(resume);
+        toast(`已下载 ${filename}`, 'ok');
       } else if (kind === 'png') {
         const r = await exportPng(resume, requireNode(), 2);
         toast(r.pages > 1 ? `已下载 ${r.pages} 页 PNG（zip）` : `已下载 ${r.filename}`, 'ok');
@@ -96,6 +104,7 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
         简历生成器
       </div>
 
+      {!standalone && (
       <div className="tb-settings">
       <Popover label={<><SlidersHorizontal size={15} /> <span className="tb-label">模板</span></>} align="left">
         {() => (
@@ -247,6 +256,7 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
         </div>
       </Popover>
       </div>
+      )}
 
       <div className="topbar-spacer" />
 
@@ -267,6 +277,7 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
         <Eye size={15} /> 预览
       </button>
       <span className="save-state">{saving ? '保存中…' : timeAgo(savedAt)}</span>
+      {!standalone && (
       <button
         type="button"
         className="tb-btn subtle"
@@ -283,6 +294,7 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
       >
         <RotateCcw size={15} /> 重置
       </button>
+      )}
       <button
         type="button"
         className="tb-btn"
@@ -302,31 +314,52 @@ export function TopBar({ onPreview }: { onPreview: () => void }) {
           <div>
             <div className="pop-title">
               导出
-              <span style={{ float: 'right', color: serverUp ? '#059669' : '#9ca3af' }}>
-                {serverUp ? '● 矢量可用' : '○ 静态模式'}
-              </span>
+              {!standalone && (
+                <span style={{ float: 'right', color: serverUp ? '#059669' : '#9ca3af' }}>
+                  {serverUp ? '● 矢量可用' : '○ 静态模式'}
+                </span>
+              )}
             </div>
-            <button type="button" className="menu-item" onClick={() => { close(); void doExport('pdf'); }}>
-              {busy === 'pdf' ? <Loader2 size={15} className="spin" /> : <FileText size={15} />}
-              PDF
-              <span className="hint">{serverUp ? '矢量 · 文字可选中' : '位图 · 一键下载'}</span>
-            </button>
-            <button type="button" className="menu-item" onClick={() => { close(); void doExport('png'); }}>
-              {busy === 'png' ? <Loader2 size={15} /> : <ImageIcon size={15} />}
-              PNG 图片
-              <span className="hint">2 倍清晰度</span>
-            </button>
+            {standalone ? (
+              <button type="button" className="menu-item" onClick={() => { close(); window.print(); }}>
+                <Printer size={15} />
+                打印 / 另存为 PDF
+                <span className="hint">本机打印</span>
+              </button>
+            ) : (
+              <>
+                <button type="button" className="menu-item" onClick={() => { close(); void doExport('pdf'); }}>
+                  {busy === 'pdf' ? <Loader2 size={15} className="spin" /> : <FileText size={15} />}
+                  PDF
+                  <span className="hint">{serverUp ? '矢量 · 文字可选中' : '位图 · 一键下载'}</span>
+                </button>
+                <button type="button" className="menu-item" onClick={() => { close(); void doExport('png'); }}>
+                  {busy === 'png' ? <Loader2 size={15} /> : <ImageIcon size={15} />}
+                  PNG 图片
+                  <span className="hint">2 倍清晰度</span>
+                </button>
+              </>
+            )}
             <button type="button" className="menu-item" onClick={() => { close(); void doExport('json'); }}>
               <Braces size={15} />
               JSON 数据
               <span className="hint">备份 / 迁移</span>
             </button>
-            <div className="menu-sep" />
-            <button type="button" className="menu-item" onClick={() => { close(); window.print(); }}>
-              <Printer size={15} />
-              打印 / 另存为 PDF
-              <span className="hint">矢量</span>
-            </button>
+            {!standalone && (
+              <>
+                <div className="menu-sep" />
+                <button type="button" className="menu-item" onClick={() => { close(); void doExport('html'); }}>
+                  <FileDown size={15} />
+                  可填写 HTML
+                  <span className="hint">单文件 · 离线</span>
+                </button>
+                <button type="button" className="menu-item" onClick={() => { close(); window.print(); }}>
+                  <Printer size={15} />
+                  打印 / 另存为 PDF
+                  <span className="hint">矢量</span>
+                </button>
+              </>
+            )}
             <button type="button" className="menu-item" onClick={() => { close(); importRef.current?.click(); }}>
               <Upload size={15} />
               导入 JSON

@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronUp, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { isStandalone } from '@/standalone/flag';
 import { useResumeStore } from '@/store/resumeStore';
 import { BasicsForm, IntentForm, SectionForm } from '@/editor/forms';
 
@@ -11,6 +12,7 @@ export function FormPane() {
   const moveSection = useResumeStore((s) => s.moveSection);
   const removeSection = useResumeStore((s) => s.removeSection);
   const toggleSection = useResumeStore((s) => s.toggleSection);
+  const standalone = isStandalone();
   const isBasics = activeId === 'basics';
   const isIntent = activeId === 'intent';
 
@@ -23,7 +25,7 @@ export function FormPane() {
         <h2>{title}</h2>
         <span className="tag">{tag}</span>
         <span className="spacer" />
-        {section && (
+        {section && !standalone && (
           <span className="form-head-actions">
             <button
               type="button"

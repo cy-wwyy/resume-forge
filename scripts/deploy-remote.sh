@@ -10,7 +10,8 @@ set -euo pipefail
 BASE_PATH="${BASE_PATH:-/}"
 SSH_KEY="${SSH_KEY:-}"
 
-echo "› 构建（base=${BASE_PATH}）"
+echo "› 构建离线模板 + 主应用（base=${BASE_PATH}）"
+npm run build:standalone
 npx vite build --base="$BASE_PATH"
 
 SSH_OPTS=""

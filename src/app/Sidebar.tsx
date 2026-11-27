@@ -16,6 +16,7 @@ import type { Section, SectionKind } from '@shared/schema/types';
 import { SECTION_LABEL } from '@shared/schema/types';
 import { useResumeStore } from '@/store/resumeStore';
 import { Switch } from '@/components/Popover';
+import { isStandalone } from '@/standalone/flag';
 
 const ICONS: Record<SectionKind, typeof User> = {
   education: GraduationCap,
@@ -53,6 +54,7 @@ function SectionRow({
   onDrop,
   onDragEnd,
 }: RowProps) {
+  const standalone = isStandalone();
   const activeId = useResumeStore((s) => s.activeId);
   const setActive = useResumeStore((s) => s.setActive);
   const toggle = useResumeStore((s) => s.toggleSection);
@@ -69,7 +71,7 @@ function SectionRow({
       ]
         .filter(Boolean)
         .join(' ')}
-      draggable
+      draggable={!standalone}
       onDragStart={(e) => {
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', section.id);
@@ -93,7 +95,9 @@ function SectionRow({
     >
       <Icon size={16} strokeWidth={1.8} />
       <span className="rail-label">{section.title}</span>
-      <Switch on={section.visible} onChange={() => toggle(section.id)} label={`显示${section.title}`} />
+      {!standalone && (
+        <Switch on={section.visible} onChange={() => toggle(section.id)} label={`显示${section.title}`} />
+      )}
     </div>
   );
 }
@@ -104,6 +108,7 @@ export function Sidebar() {
   const setActive = useResumeStore((s) => s.setActive);
   const addSection = useResumeStore((s) => s.addSection);
   const reorderSection = useResumeStore((s) => s.reorderSection);
+  const standalone = isStandalone();
   const [adding, setAdding] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -174,10 +179,12 @@ export function Sidebar() {
         />
       ))}
 
-      <button type="button" className="rail-add" onClick={() => setAdding((v) => !v)}>
-        <Plus size={14} /> <span className="rail-add-text">添加模块</span>
-      </button>
-      {adding && !collapsed && (
+      {!standalone && (
+        <button type="button" className="rail-add" onClick={() => setAdding((v) => !v)}>
+          <Plus size={14} /> <span className="rail-add-text">添加模块</span>
+        </button>
+      )}
+      {!standalone && adding && !collapsed && (
         <div className="rail-menu">
           {ADDABLE.map((kind) => {
             const Icon = ICONS[kind];
@@ -201,9 +208,15 @@ export function Sidebar() {
 
       <div className="rail-sep" />
       <div className="rail-note">
-        数据只存在本机浏览器，
-        <br />
-        记得导出 JSON 备份。
+        {standalone ? (
+          '数据只保存在这台电脑的浏览器里。'
+        ) : (
+          <>
+            数据只存在本机浏览器，
+            <br />
+            记得导出 JSON 备份。
+          </>
+        )}
       </div>
 
       <div className="rail-foot">

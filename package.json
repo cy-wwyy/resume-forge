@@ -7,7 +7,7 @@
     "dev": "concurrently -n web,api -c cyan,magenta \"vite\" \"tsx watch server/index.ts\"",
     "dev:web": "vite",
     "dev:api": "tsx watch server/index.ts",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && npm run build:standalone && vite build",
     "start": "NODE_ENV=production tsx server/index.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -15,7 +15,8 @@
     "check": "npm run typecheck && node scripts/check-ui.mjs && node scripts/check-export.mjs",
     "dev:lan": "concurrently -n web,api -c cyan,magenta \"vite --host\" \"tsx watch server/index.ts\"",
     "build:subpath": "VITE_BASE=/resume/ vite build",
-    "deploy": "bash scripts/deploy-remote.sh"
+    "deploy": "bash scripts/deploy-remote.sh",
+    "build:standalone": "vite build --config vite.standalone.config.ts && node scripts/build-standalone.mjs"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",
