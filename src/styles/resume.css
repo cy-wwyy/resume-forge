@@ -1,0 +1,393 @@
+/* 简历纸张内容样式。作用域 .rs，尺寸单位用 em，跟随 --fs 缩放。 */
+
+.sheet {
+  font-family: var(--font-ui);
+}
+
+.rs {
+  font-size: calc(11.5px * var(--fs, 1));
+  line-height: var(--lh, 1.65);
+  color: #1f2937;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rs[data-font='serif'] {
+  font-family: var(--font-serif);
+}
+
+.rs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- header ---------- */
+
+.rs-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 2px;
+}
+
+.rs-head-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.rs-name {
+  margin: 0 0 0.5em;
+  font-size: 2.2em;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  /* 姓名跟随主题色，换配色时整张简历的主色一致 */
+  color: var(--accent, #2563eb);
+}
+
+.rs-intent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em 1.3em;
+  margin-bottom: 0.8em;
+  font-size: 0.95em;
+  color: #4b5563;
+}
+
+.rs-intent-item b {
+  font-weight: 700;
+  color: #111827;
+}
+
+.rs-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35em 1.4em;
+  font-size: 0.95em;
+  color: #4b5563;
+}
+
+.rs-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  min-width: 0;
+}
+
+.rs-meta-item svg {
+  width: 1.05em;
+  height: 1.05em;
+  color: #8b95a5;
+  flex: 0 0 auto;
+}
+
+.rs-photo {
+  /* 接近一寸照比例，与左侧信息块垂直居中；右侧留出间距，不贴版心边缘 */
+  width: 6.7em;
+  height: 8.9em;
+  margin-right: 0.8em;
+  max-width: 22%;
+  flex: 0 0 auto;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 3px;
+  background: #eef1f5;
+}
+
+/* ---------- section ---------- */
+
+.rs-section {
+  margin-top: calc(var(--gap, 18px) * 1);
+}
+
+.rs-h {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  margin: 0 0 0.55em;
+  padding: 0.26em 0.7em;
+  font-size: 1.04em;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--accent, #2563eb);
+  background: var(--accent-weak, #eff4fd);
+  border-radius: 2px;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.rs-h::before {
+  content: '';
+  width: 3px;
+  height: 0.95em;
+  border-radius: 2px;
+  background: var(--accent, #2563eb);
+  flex: 0 0 auto;
+}
+
+.rs[data-title='pill'] .rs-h {
+  display: inline-flex;
+  padding: 0.2em 0.85em;
+  border-radius: 99px;
+  background: var(--accent, #2563eb);
+  color: #fff;
+}
+
+.rs[data-title='pill'] .rs-h::before {
+  display: none;
+}
+
+.rs[data-title='underline'] .rs-h {
+  padding: 0 0 0.25em;
+  background: none;
+  border-radius: 0;
+  border-bottom: 1.5px solid var(--accent, #2563eb);
+}
+
+.rs[data-title='underline'] .rs-h::before {
+  display: none;
+}
+
+/* ---------- entries ---------- */
+
+.rs-entry {
+  margin-top: 0.85em;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.rs-entry:first-of-type {
+  margin-top: 0.2em;
+}
+
+.rs-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  min-width: 0;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.rs-head-right {
+  margin-left: auto;
+  padding-left: 0.8em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  flex: 0 0 auto;
+}
+
+.rs-date {
+  font-size: 0.93em;
+  color: #6b7280;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.rs-title {
+  font-weight: 600;
+  color: #111827;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rs-subtitle {
+  font-size: 0.95em;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.rs-role {
+  font-size: 0.95em;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.rs-tag {
+  font-size: 0.76em;
+  line-height: 1.6;
+  color: var(--accent, #2563eb);
+  background: var(--accent-weak, #eff4fd);
+  border-radius: 2px;
+  padding: 0 0.4em;
+  white-space: nowrap;
+  font-weight: 500;
+  flex: 0 0 auto;
+}
+
+/* 正文一律从版心左缘起排，不再按时间列缩进 */
+.rs-desc {
+  margin-top: 0.28em;
+  font-size: 0.98em;
+  color: #374151;
+}
+
+.rs-desc p {
+  margin: 0.2em 0;
+}
+
+.rs-desc ul,
+.rs-desc ol {
+  margin: 0.15em 0;
+  padding-left: 1.15em;
+}
+
+.rs-desc li {
+  margin: 0.12em 0;
+}
+
+.rs-desc li::marker {
+  color: #9aa3b2;
+}
+
+.rs-desc strong,
+.rs-desc b {
+  font-weight: 600;
+  color: #111827;
+}
+
+.rs-courses {
+  margin-top: 0.2em;
+  font-size: 0.93em;
+  color: #4b5563;
+  display: flex;
+  gap: 0.3em;
+}
+
+.rs-courses .label {
+  color: #6b7280;
+  flex: 0 0 auto;
+}
+
+/* ---------- skills ---------- */
+
+.rs-skill-summary {
+  font-size: 0.98em;
+  color: #374151;
+  margin: 0.1em 0 0.35em;
+}
+
+.rs-skill-summary p {
+  margin: 0.15em 0;
+}
+
+.rs-skill-summary ul,
+.rs-skill-summary ol {
+  margin: 0.15em 0;
+  padding-left: 1.15em;
+}
+
+.rs-skill-summary li {
+  margin: 0.1em 0;
+}
+
+.rs-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin-top: 0.32em;
+  font-size: 0.95em;
+}
+
+.rs-skill-name {
+  width: 4.6em;
+  flex: 0 0 auto;
+  color: #374151;
+}
+
+.rs-bar {
+  flex: 1 1 auto;
+  max-width: 20em;
+  height: 0.36em;
+  background: #e4e8ef;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.rs-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent, #2563eb);
+  border-radius: 99px;
+}
+
+.rs-skill-label {
+  font-size: 0.9em;
+  color: #6b7280;
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.rs-keywords {
+  margin-top: 0.5em;
+  font-size: 0.94em;
+  color: #4b5563;
+}
+
+/* ---------- awards ---------- */
+
+.rs-award {
+  margin-top: 0.4em;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.rs-award-title {
+  color: #111827;
+}
+
+.rs-award-desc {
+  font-size: 0.92em;
+  color: #6b7280;
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .app,
+  .toasts,
+  .preview,
+  .export-root {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block !important;
+  }
+
+  .sheet {
+    box-shadow: none !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .rs {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .rs-h {
+    break-after: avoid;
+  }
+
+  .rs-entry,
+  .rs-award {
+    break-inside: avoid;
+  }
+}
+
+#print-root {
+  display: none;
+}

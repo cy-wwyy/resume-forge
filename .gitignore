@@ -1,0 +1,8 @@
+node_modules
+dist
+.DS_Store
+*.log
+.env.local
+.env
+# 导出的简历数据不要进仓库
+*.resume.json
